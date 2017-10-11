@@ -1,0 +1,1 @@
+# capistrano-db-sync

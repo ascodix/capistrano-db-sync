@@ -1,5 +1,3 @@
-require File.expand_path(File.dirname(__FILE__) + '/../models/database')
-
 namespace :db do
 
   namespace :sync do

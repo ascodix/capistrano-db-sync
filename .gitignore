@@ -4,3 +4,8 @@
 .settings
 .idea/*
 *.iml
+
+# Gem
+capistrano-db-sync-*
+*.gem
+Gemfile.lock

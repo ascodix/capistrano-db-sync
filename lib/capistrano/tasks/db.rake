@@ -40,7 +40,7 @@ namespace :db do
     Retrieves a remote database from the selected stage environment to the local development
     environment. The database credentials will be read from your local config/database.yml file.
     DESC
-    task :remote_to_locale do
+    task :remote_to_local do
       on roles(:all) do
         # Backup de la base donnée distante
 

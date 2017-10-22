@@ -1,7 +1,13 @@
+require File.expand_path("#{File.dirname(__FILE__)}/database")
+
 namespace :db do
 
   namespace :sync do
 
+    desc <<-DESC
+    Push the current local development database to the remote database from the selected stage 
+    environment. The database credentials will be read from the remote config/database.yml file.
+    DESC
     task :local_to_remote do
 
       on roles(:all) do
@@ -17,6 +23,8 @@ namespace :db do
 
         # Export du fichier SQL
         upload! filename, "#{shared_path}/sync/#{filename}"
+
+        # Suppression du fichier SQL de la base de données locale
         system "rm -f #{filename}"
 
         # Import de la base de données
@@ -25,6 +33,33 @@ namespace :db do
         execute :mysql, "-u #{username} --password=#{password} #{database} #{hostcmd} < #{shared_path}/sync/#{filename}"
       end
 
+    end
+
+
+    desc <<-DESC
+    Retrieves a remote database from the selected stage environment to the local development
+    environment. The database credentials will be read from your local config/database.yml file.
+    DESC
+    task :remote_to_locale do
+      on roles(:all) do
+        # Backup de la base donnée distante
+
+        # Création du fichier SQL de la base de données distante
+        filename = "dump.local.#{Time.now.strftime '%Y-%m-%d_%H-%M-%S'}.sql"
+        username, password, database, host = remote_database_config('stage')
+        execute "mysqldump -u #{username} --password=#{password} #{database} > #{shared_path}/sync/#{filename}"
+
+        # Import du fichier SQL
+        download! "#{shared_path}/sync/#{filename}", filename
+
+        # Import de la base de données
+        username, password, database, host = remote_database_config(:stage)
+        hostcmd = host.nil? ? '' : "-h #{host}"
+        system "mysql -u #{username} --password=#{password} #{database} #{hostcmd} < #{filename}"
+
+        # Suppression du fichier SQL de la base de données distante
+        system "rm -f #{filename}"
+      end
     end
 
   end

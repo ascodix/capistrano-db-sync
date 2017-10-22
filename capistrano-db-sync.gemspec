@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name        = 'capistrano-db-sync'
-  spec.version     = '0.0.12'
+  spec.version     = '0.0.13'
   spec.date        = Date.today.to_s
   spec.summary     = "Capistrano synchronization databases task"
   spec.description = "Capistrano synchronization task for syncing databases between the local development environment and different multi_stage environments"
